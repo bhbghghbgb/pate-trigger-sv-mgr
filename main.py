@@ -109,8 +109,8 @@ async def warn_before_process_kill(healthy_status):
     )
     await asyncio.sleep(PROCESS_PRIOR_KILL_TIME - PROCESS_PRIOR_KILL_LAST_WARNING_TIME)
     logger.warning(
-        "Process kill in %ds",
-        PROCESS_PRIOR_KILL_LAST_WARNING_TIME,
+        "Process kill in %s",
+        humanize_duration(PROCESS_PRIOR_KILL_LAST_WARNING_TIME),
     )
     await asyncio.sleep(PROCESS_PRIOR_KILL_LAST_WARNING_TIME)
 
