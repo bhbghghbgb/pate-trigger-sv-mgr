@@ -180,7 +180,8 @@ def wait_process_graceful_kill(
 
 
 def get_process_is_healthy() -> tuple[bool, bool, bool]:
-    process_memory_info = get_process_memory_info()
+    global process_memory_info_cached
+    process_memory_info = process_memory_info_cached
     if process_memory_info is None:
         return False, False, False
     return (
@@ -262,13 +263,20 @@ def get_system_memory_info():
 
 
 def get_process_memory_info():
+    global process_memory_info_cached
     process = get_process()
     if process is None:
         return None
     process_memory_info = process.memory_info()
     process_memory_resident = process_memory_info.rss
     process_memory_virtual = process_memory_info.vms
-    return process_memory_virtual, process_memory_resident
+    # cache
+    return (
+        process_memory_info_cached := (process_memory_virtual, process_memory_resident)
+    )
+
+
+process_memory_info_cached = get_process_memory_info()
 
 
 def get_process() -> psutil.Process | None:
