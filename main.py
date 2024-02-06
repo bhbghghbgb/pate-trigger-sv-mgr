@@ -96,12 +96,11 @@ async def wait_process_unexpected_death():
             return_code = await process_parent_subprocess.wait()
             if not wait_process_unexpected_death__actually_expected:
                 logger.error("Process died unexpectedly, return code %d", return_code)
+            process_parent_subprocess = None
+            process_object = None
             # finishes the task here to trigger restart_process in main()
     except asyncio.CancelledError:
         logger.debug("Process wait for unexpected death cancelled")
-    finally:
-        process_parent_subprocess = None
-        process_object = None
 
 
 async def process_monitor_loop():
