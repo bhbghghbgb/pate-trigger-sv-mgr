@@ -10,6 +10,7 @@ pate-trigger (Palworld)'s dedicated server auto restarter in async python for mi
 1. Put the two `.bat` files there
 1. Configure the server options in the `Start server.bat` file
 1. Configure the constants at around the top of `main.py` file
+1. Rename `secrets.template.json` back to `secrets.json`
 1. Configure `secrets.json` if you want use discord webhook to log
     1. If don't use, comment out its `addHandler` in `setup_server` function in `LoggingStuff.py`
 1. Run `main.py`
