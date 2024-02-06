@@ -1120,3 +1120,144 @@ FileNotFoundError: [Errno 2] No such file or directory: 'F:/Volume 1/gem/Palworl
 2024-02-05 22:42:10,114 D Process monitor loop cancelled
 2024-02-05 22:42:10,115 D Process wait for unexpected death cancelled
 2024-02-05 22:42:10,130 D Waiting for all logs to be sent to discord webhook
+2024-02-06 17:12:10,274 I pate-trigger-sv-mgr @sechnaptien mo sv OPEN
+2024-02-06 17:12:10,318 I Running backup subprocess on after process death
+2024-02-06 17:12:11,460 D Loading file D:/Palworld Dedicated Server/Backup save.log for webhook upload
+2024-02-06 17:12:11,476 D Loading file D:/Palworld Dedicated Server/Saved.rar for webhook upload
+2024-02-06 17:12:17,244 D Attempted to upload 2 files to webhook
+2024-02-06 17:12:17,244 I Starting process
+2024-02-06 17:12:17,244 C Unhandled exception
+Traceback (most recent call last):
+  File "D:\pate-trigger-sv-mgr\main.py", line 44, in main
+    if await restart_process() is None:
+       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pate-trigger-sv-mgr\main.py", line 135, in restart_process
+    return await start_process()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pate-trigger-sv-mgr\main.py", line 140, in start_process
+    process_parent_subprocess = await asyncio.create_subprocess_exec(
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\asyncio\subprocess.py", line 222, in create_subprocess_exec
+    transport, protocol = await loop.subprocess_exec(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 1708, in subprocess_exec
+    transport = await self._make_subprocess_transport(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 399, in _make_subprocess_transport
+    transp = _WindowsSubprocessTransport(self, protocol, args, shell,
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_subprocess.py", line 36, in __init__
+    self._start(args=args, shell=shell, stdin=stdin, stdout=stdout,
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py", line 873, in _start
+    self._proc = windows_utils.Popen(
+                 ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_utils.py", line 153, in __init__
+    super().__init__(args, stdin=stdin_rfd, stdout=stdout_wfd,
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\subprocess.py", line 1538, in _execute_child
+    hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] The system cannot find the file specified
+2024-02-06 17:12:17,356 D Waiting for all logs to be sent to discord webhook
+2024-02-06 17:34:56,505 I pate-trigger-sv-mgr @sechnaptien mo sv OPEN
+2024-02-06 17:34:56,506 I Running backup subprocess on after process death
+2024-02-06 17:34:57,781 D Loading file D:/Palworld Dedicated Server/Backup save.log for webhook upload
+2024-02-06 17:34:57,792 D Loading file D:/Palworld Dedicated Server/Saved.rar for webhook upload
+2024-02-06 17:35:03,251 D Attempted to upload 2 files to webhook
+2024-02-06 17:35:03,259 I Starting process
+2024-02-06 17:35:04,631 I System memory: Virtual 5.9GiB/11.8GiB, Swap 65.1MiB/4.2GiB
+> Process memory: Virtual 111.9MiB/9.0GiB, Resident 157.6MiB
+> Process uptime 0:00:01/1:00:00, start count 1, pid (4552, 13248)
+> Script uptime 0:00:08
+> Healthiness {'Running': True, 'Memory': True, 'Uptime': True}
+2024-02-06 17:35:23,489 D Process wait for unexpected death cancelled
+2024-02-06 17:35:23,490 D Process monitor loop cancelled
+2024-02-06 17:35:23,545 D Waiting for all logs to be sent to discord webhook
+2024-02-06 17:36:57,634 I pate-trigger-sv-mgr @sechnaptien mo sv OPEN
+2024-02-06 17:37:30,804 I pate-trigger-sv-mgr @sechnaptien mo sv OPEN
+2024-02-06 17:37:30,804 I Starting process
+2024-02-06 17:37:32,171 I System memory: Virtual 6.1GiB/11.8GiB, Swap 65.1MiB/4.2GiB
+> Process memory: Virtual 244.5MiB/9.0GiB, Resident 260.1MiB
+> Process uptime 0:00:01/1:00:00, start count 1, pid (7508, 13084)
+> Script uptime 0:00:01
+> Healthiness {'Running': True, 'Memory': True, 'Uptime': True}
+2024-02-06 17:38:18,986 E Process died unexpectedly, return code 255
+2024-02-06 17:38:19,002 I Running backup subprocess on after process death
+2024-02-06 17:38:20,037 D Loading file D:/Palworld Dedicated Server/Backup save.log for webhook upload
+2024-02-06 17:38:20,053 D Loading file D:/Palworld Dedicated Server/Saved.rar for webhook upload
+2024-02-06 17:38:25,051 D Attempted to upload 2 files to webhook
+2024-02-06 17:38:25,051 I Starting process
+2024-02-06 17:38:26,094 I System memory: Virtual 6.1GiB/11.8GiB, Swap 65.1MiB/4.2GiB
+> Process memory: Virtual 187.1MiB/9.0GiB, Resident 199.4MiB
+> Process uptime 0:00:01/1:00:00, start count 2, pid (12440, 9660)
+> Script uptime 0:00:55
+> Healthiness {'Running': True, 'Memory': True, 'Uptime': True}
+2024-02-06 17:39:11,365 D Process monitor loop cancelled
+2024-02-06 17:39:11,365 D Process wait for unexpected death cancelled
+2024-02-06 17:39:11,366 D Process monitor loop cancelled
+2024-02-06 17:39:11,377 D Waiting for all logs to be sent to discord webhook
+2024-02-06 17:44:27,880 I pate-trigger-sv-mgr @sechnaptien mo sv OPEN
+2024-02-06 17:44:27,881 I Starting process
+2024-02-06 17:44:29,226 I System memory: Virtual 6.1GiB/11.8GiB, Swap 63.3MiB/4.2GiB
+> Process memory: Virtual 238.0MiB/9.0GiB, Resident 254.0MiB
+> Process uptime 0:00:01/0:00:20, start count 1, pid (11048, 10964)
+> Script uptime 0:00:01
+> Healthiness {'Running': True, 'Memory': True, 'Uptime': True}
+2024-02-06 17:44:59,257 I System memory: Virtual 7.1GiB/11.8GiB, Swap 71.6MiB/4.2GiB
+> Process memory: Virtual 1.5GiB/9.0GiB, Resident 1.5GiB
+> Process uptime 0:00:31/0:00:20, start count 1, pid (11048, 10964)
+> Script uptime 0:00:31
+> Healthiness {'Running': True, 'Memory': True, 'Uptime': False}
+2024-02-06 17:44:59,259 W Process is not healthy {'Running': True, 'Memory': True, 'Uptime': False}, restart in 0:01:30 (<t:1707216389:R>)
+2024-02-06 17:45:59,268 I System memory: Virtual 7.3GiB/11.8GiB, Swap 71.6MiB/4.2GiB
+> Process memory: Virtual 1.6GiB/9.0GiB, Resident 1.6GiB
+> Process uptime 0:01:31/0:00:20, start count 1, pid (11048, 10964)
+> Script uptime 0:01:31
+> Healthiness {'Running': True, 'Memory': True, 'Uptime': False}
+2024-02-06 17:46:19,259 W Process kill in 0:00:10
+2024-02-06 17:46:29,272 I Asking the process to shutdown gracefully
+2024-02-06 17:46:32,613 E Killing process (Graceful shutdown timed out)
+2024-02-06 17:46:32,779 E Process died unexpectedly, return code 15
+2024-02-06 17:46:33,638 I Disabled backup subprocess on after process death
+2024-02-06 17:46:33,639 I Starting process
+2024-02-06 17:46:34,674 I System memory: Virtual 5.9GiB/11.8GiB, Swap 71.6MiB/4.2GiB
+> Process memory: Virtual 216.4MiB/9.0GiB, Resident 231.6MiB
+> Process uptime 0:00:01/0:00:20, start count 2, pid (12696, 9092)
+> Script uptime 0:02:06
+> Healthiness {'Running': True, 'Memory': True, 'Uptime': True}
+2024-02-06 17:47:04,694 I System memory: Virtual 7.2GiB/11.8GiB, Swap 71.6MiB/4.2GiB
+> Process memory: Virtual 1.5GiB/9.0GiB, Resident 1.5GiB
+> Process uptime 0:00:31/0:00:20, start count 2, pid (12696, 9092)
+> Script uptime 0:02:36
+> Healthiness {'Running': True, 'Memory': True, 'Uptime': False}
+2024-02-06 17:47:04,696 W Process is not healthy {'Running': True, 'Memory': True, 'Uptime': False}, restart in 0:01:30 (<t:1707216514:R>)
+2024-02-06 17:49:13,094 I pate-trigger-sv-mgr @sechnaptien mo sv OPEN
+2024-02-06 17:49:13,095 I Starting process
+2024-02-06 17:49:14,377 I System memory: Virtual 5.9GiB/11.8GiB, Swap 71.5MiB/4.2GiB
+> Process memory: Virtual 244.4MiB/1.0GiB, Resident 260.1MiB
+> Process uptime 0:00:01/1:00:00, start count 1, pid (12408, 488)
+> Script uptime 0:00:01
+> Healthiness {'Running': True, 'Memory': True, 'Uptime': True}
+2024-02-06 17:50:14,392 I System memory: Virtual 7.2GiB/11.8GiB, Swap 87.6MiB/4.2GiB
+> Process memory: Virtual 1.5GiB/1.0GiB, Resident 1.6GiB
+> Process uptime 0:01:01/1:00:00, start count 1, pid (12408, 488)
+> Script uptime 0:01:01
+> Healthiness {'Running': True, 'Memory': False, 'Uptime': True}
+2024-02-06 17:50:14,400 I System memory: Virtual 7.2GiB/11.8GiB, Swap 87.6MiB/4.2GiB
+> Process memory: Virtual 1.5GiB/1.0GiB, Resident 1.6GiB
+> Process uptime 0:01:01/1:00:00, start count 1, pid (12408, 488)
+> Script uptime 0:01:01
+> Healthiness {'Running': True, 'Memory': False, 'Uptime': True}
+2024-02-06 17:50:14,402 W Process is not healthy, restart in 0:00:15 (<t:1707216629:R>), healthiness {'Running': True, 'Memory': False, 'Uptime': True}
+2024-02-06 17:50:19,407 W Process kill in 0:00:10
+2024-02-06 17:50:29,422 I Asking the process to shutdown gracefully
+2024-02-06 17:50:32,748 E Killing process (Graceful shutdown timed out)
+2024-02-06 17:50:32,918 E Process died unexpectedly, return code 15
+2024-02-06 17:50:33,757 I Disabled backup subprocess on after process death
+2024-02-06 17:50:33,757 I Starting process
+2024-02-06 17:50:34,794 I System memory: Virtual 5.7GiB/11.8GiB, Swap 87.6MiB/4.2GiB
+> Process memory: Virtual 186.6MiB/1.0GiB, Resident 198.3MiB
+> Process uptime 0:00:01/1:00:00, start count 2, pid (3640, 11156)
+> Script uptime 0:01:21
+> Healthiness {'Running': True, 'Memory': True, 'Uptime': True}

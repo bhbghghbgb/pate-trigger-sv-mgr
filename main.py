@@ -9,21 +9,19 @@ import psutil
 from LoggingStuff import CODENAME, logger, setup_logging, webhook_file_upload
 
 PROCESS_NAME = "PalServer-Win64-Test-Cmd.exe"
-PROCESS_EXECUTOR = "F:/Volume 1/gem/Palworld/_Dedicated Server/Start sv.bat"
-PROCESS_EXECUTOR_CWD = "F:/Volume 1/gem/Palworld/_Dedicated Server"
-PROCESS_DATA_BACKUP_EXECUTOR = (
-    "F:/Volume 1/gem/Palworld/_Dedicated Server/Backup save.bat"
-)
-PROCESS_DATA_BACKUP_EXECUTOR_LOG = (
-    "F:/Volume 1/gem/Palworld/_Dedicated Server/Backup save.log"
-)
-PROCESS_DATA_BACKUP_DATA = "F:/Volume 1/gem/Palworld/_Dedicated Server/Saved.rar"
+PROCESS_EXECUTOR = "D:/Palworld Dedicated Server/Start server.bat"
+PROCESS_EXECUTOR_CWD = "D:/Palworld Dedicated Server"
+PROCESS_DATA_BACKUP_EXECUTOR = "D:/Palworld Dedicated Server/Backup save.bat"
+PROCESS_DATA_BACKUP_EXECUTOR_LOG = "D:/Palworld Dedicated Server/Backup save.log"
+PROCESS_DATA_BACKUP_DATA = "D:/Palworld Dedicated Server/Saved.rar"
 PROCESS_MAX_MEM = 9 * 1024 * 1024 * 1024
 PROCESS_MAX_LIVE_TIME = 3600
 PROCESS_MONITOR_INTERVAL = 60
 PROCESS_PRIOR_KILL_TIME = 90
 PROCESS_PRIOR_KILL_LAST_WARNING_TIME = 10
 STATISTICS_LOG_INTERVAL = 60
+
+DONT_RUN_BACKUP_JOB = False
 
 script_start_timepoint = time.time()
 process_restart_timepoint = 0
@@ -32,6 +30,8 @@ process_object: psutil.Process | None = None
 process_parent_subprocess: asyncio.subprocess.Process | None = None
 # allow a few moments for the process to start before logging
 last_statistics_log_timepoint = time.time() - STATISTICS_LOG_INTERVAL + 10
+
+process_memory_info_cached: tuple[int, int] | None = None
 
 
 async def main():
@@ -102,10 +102,10 @@ async def process_monitor_loop():
 async def warn_before_process_kill(healthy_status):
     statistics_log()
     logger.warning(
-        "Process is not healthy %s, restart in %s (%s)",
-        healthy_status,
+        "Process is not healthy, restart in %s (%s), healthiness %s",
         humanize_duration(PROCESS_PRIOR_KILL_TIME),
         discordize_timestamp_relative_to_now(PROCESS_PRIOR_KILL_TIME),
+        healthy_status,
     )
     await asyncio.sleep(PROCESS_PRIOR_KILL_TIME - PROCESS_PRIOR_KILL_LAST_WARNING_TIME)
     logger.warning(
@@ -124,6 +124,7 @@ def discordize_timestamp_relative_to_now(seconds: float):
 
 
 async def restart_process():
+    global process_start_count
     process = get_process()
     if process is not None:
         logger.info("Asking the process to shutdown gracefully")
@@ -131,7 +132,9 @@ async def restart_process():
         if not graceful_die_result[0]:
             logger.error("Killing process (Graceful shutdown timed out)")
             await process_force_kill(process)
-    await on_after_process_death()
+    # don't run when script just started
+    if process_start_count:
+        await on_after_process_death()
     await on_before_process_restart()
     logger.info("Starting process")
     return await start_process()
@@ -276,9 +279,6 @@ def get_process_memory_info():
     )
 
 
-process_memory_info_cached = get_process_memory_info()
-
-
 def get_process() -> psutil.Process | None:
     global process_object, process_parent_subprocess
     if (
@@ -315,6 +315,9 @@ async def on_before_process_restart():
 
 
 async def on_after_process_death():
+    if DONT_RUN_BACKUP_JOB:
+        logger.info("Disabled backup subprocess on after process death")
+        return
     logger.info("Running backup subprocess on after process death")
     process = await asyncio.create_subprocess_exec(
         PROCESS_DATA_BACKUP_EXECUTOR,
