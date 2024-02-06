@@ -20,8 +20,10 @@ PROCESS_MONITOR_INTERVAL = 60
 PROCESS_PRIOR_KILL_TIME = 90
 PROCESS_PRIOR_KILL_LAST_WARNING_TIME = 10
 STATISTICS_LOG_INTERVAL = 60
+PROCESS_DATA_BACKUP_JOB_INTERVAL = 1200
 
 DONT_RUN_BACKUP_JOB = False
+DONT_UPLOAD_BACKUP_DATA_WEBHOOK = False
 
 script_start_timepoint = time.time()
 process_restart_timepoint = 0
@@ -35,7 +37,7 @@ process_memory_info_cached: tuple[int, int] | None = None
 
 
 async def main():
-    global statistics_log_task
+    global statistics_log_task, wait_process_unexpected_death__actually_expected
     setup_logging()
     try:
         on_script_start()
@@ -58,11 +60,22 @@ async def main():
                     wait_process_unexpected_death()
                 )
                 process_monitor_loop_task = asyncio.create_task(process_monitor_loop())
+                process_data_backup_job_task = asyncio.create_task(
+                    process_data_backup_job_loop()
+                )
+                wait_process_unexpected_death__actually_expected = False
                 # return when either the process died unexpectedly, or it's not healthy and past the warning time
-                await asyncio.wait(
-                    [wait_process_unexpected_death_task, process_monitor_loop_task],
+                # the backup job will not finish itself but will also be cancelled if the process dies
+                _, unfinished = await asyncio.wait(
+                    [
+                        wait_process_unexpected_death_task,
+                        process_monitor_loop_task,
+                        process_data_backup_job_task,
+                    ],
                     return_when=asyncio.FIRST_COMPLETED,
                 )
+                for task in unfinished:
+                    task.cancel()
         except KeyboardInterrupt:
             logger.info("Requested monitor termination", exc_info=True)
             on_script_stop()
@@ -73,12 +86,16 @@ async def main():
     on_script_stop()
 
 
+wait_process_unexpected_death__actually_expected = False
+
+
 async def wait_process_unexpected_death():
     global process_parent_subprocess, process_object
     try:
         if process_parent_subprocess is not None:
             return_code = await process_parent_subprocess.wait()
-            logger.error("Process died unexpectedly, return code %d", return_code)
+            if not wait_process_unexpected_death__actually_expected:
+                logger.error("Process died unexpectedly, return code %d", return_code)
             # finishes the task here to trigger restart_process in main()
     except asyncio.CancelledError:
         logger.debug("Process wait for unexpected death cancelled")
@@ -124,13 +141,14 @@ def discordize_timestamp_relative_to_now(seconds: float):
 
 
 async def restart_process():
-    global process_start_count
+    global process_start_count, wait_process_unexpected_death__actually_expected
     process = get_process()
     if process is not None:
         logger.info("Asking the process to shutdown gracefully")
+        wait_process_unexpected_death__actually_expected = True
         graceful_die_result = await process_graceful_kill(process)
         if not graceful_die_result[0]:
-            logger.error("Killing process (Graceful shutdown timed out)")
+            logger.info("Killing process (Graceful shutdown timed out)")
             await process_force_kill(process)
     # don't run when script just started
     if process_start_count:
@@ -315,10 +333,16 @@ async def on_before_process_restart():
 
 
 async def on_after_process_death():
-    if DONT_RUN_BACKUP_JOB:
-        logger.info("Disabled backup subprocess on after process death")
+    await process_data_backup_job()
+    if DONT_RUN_BACKUP_JOB or DONT_UPLOAD_BACKUP_DATA_WEBHOOK:
         return
-    logger.info("Running backup subprocess on after process death")
+    await webhook_file_upload([PROCESS_DATA_BACKUP_DATA])
+
+
+async def process_data_backup_job():
+    if DONT_RUN_BACKUP_JOB:
+        return
+    logger.info("Running backup subprocess data backup job")
     process = await asyncio.create_subprocess_exec(
         PROCESS_DATA_BACKUP_EXECUTOR,
         stderr=asyncio.subprocess.STDOUT,
@@ -331,13 +355,15 @@ async def on_after_process_death():
         if process.stdout is not None:
             with open(PROCESS_DATA_BACKUP_EXECUTOR_LOG, "wb") as f:
                 f.write((await process.communicate())[0])
-        await webhook_file_upload(
-            [PROCESS_DATA_BACKUP_EXECUTOR_LOG, PROCESS_DATA_BACKUP_DATA]
-        )
+        await webhook_file_upload([PROCESS_DATA_BACKUP_EXECUTOR_LOG])
     except OSError:
-        logger.exception(
-            "Cannot upload data of backup subprocess on after process death"
-        )
+        logger.info("Backup subprocess data backup job failed", exc_info=True)
+
+
+async def process_data_backup_job_loop():
+    while True:
+        await asyncio.sleep(PROCESS_DATA_BACKUP_JOB_INTERVAL)
+        await process_data_backup_job()
 
 
 def on_script_start():

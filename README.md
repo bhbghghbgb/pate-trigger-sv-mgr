@@ -2,6 +2,8 @@
 
 pate-trigger (Palworld)'s dedicated server auto restarter in async python for mitigating memory leak.
 
+There is also an attempt to backup your save data.
+
 ## How use
 
 1. Clone the project
@@ -17,14 +19,20 @@ pate-trigger (Palworld)'s dedicated server auto restarter in async python for mi
 
 ## What do
 
-- Everytime the server dies, run the backup script
 - Restart the server process:
     - Immediately if it dies unexpectedly
     - After a configured amount of time, with a warning sent:
         - Been running for too long (process uptime limit)
         - Leaked too much memory (process memory limit)
+- Run the backup script:
+    - Every configured interval
+    - When the server dies
+- Upload the backup data:
+    - When the server dies
 
 > **_NOTE:_**  The server process does take more memory for the more users logged in simultaneously, does not neccessarily mean that it leaked memory. You will need to observe the resource usage a few times, and determine what should be the limits including your own device hardware specs in mind.
+
+> **_note:_**  If the backup job is run due to interval, it will only upload the log file. Only when the server dies will it also upload the backup save data file.
 
 ## Requirements
 
@@ -45,7 +53,9 @@ pate-trigger (Palworld)'s dedicated server auto restarter in async python for mi
 
 ### Windows
 
-- Only due to the starter batch files and archiving with `WinRAR`. Otherwise, cross-platform
+- It is not cross-platform due to these problems:
+    - The signal sent to terminate the process gracefully is incompatible on Windows/Linux
+    - The starter batch files and archiving with `WinRAR`
 
 ## License
 
@@ -54,3 +64,7 @@ MIT
 ## Contribution
 
 Feel free
+
+## More
+
+There is an useless log file because I forgot to gitignore it the when I created the repo.

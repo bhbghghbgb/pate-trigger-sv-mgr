@@ -1261,3 +1261,33 @@ FileNotFoundError: [WinError 2] The system cannot find the file specified
 > Process uptime 0:00:01/1:00:00, start count 2, pid (3640, 11156)
 > Script uptime 0:01:21
 > Healthiness {'Running': True, 'Memory': True, 'Uptime': True}
+2024-02-06 17:59:49,926 I pate-trigger-sv-mgr @sechnaptien mo sv OPEN
+2024-02-06 17:59:49,926 I Starting process
+2024-02-06 17:59:51,275 I System memory: Virtual 6.0GiB/11.8GiB, Swap 81.1MiB/4.2GiB
+> Process memory: Virtual 242.7MiB/1.0B, Resident 258.9MiB
+> Process uptime 0:00:01/1:00:00, start count 1, pid (11332, 8016)
+> Script uptime 0:00:01
+> Healthiness {'Running': True, 'Memory': False, 'Uptime': True}
+2024-02-06 17:59:51,284 I System memory: Virtual 6.0GiB/11.8GiB, Swap 81.1MiB/4.2GiB
+> Process memory: Virtual 244.1MiB/1.0B, Resident 260.3MiB
+> Process uptime 0:00:01/1:00:00, start count 1, pid (11332, 8016)
+> Script uptime 0:00:01
+> Healthiness {'Running': True, 'Memory': False, 'Uptime': True}
+2024-02-06 17:59:51,286 W Process is not healthy, restart in 0:00:15 (<t:1707217206:R>), healthiness {'Running': True, 'Memory': False, 'Uptime': True}
+2024-02-06 18:00:01,291 W Process kill in 0:00:05
+2024-02-06 18:00:06,295 I Asking the process to shutdown gracefully
+2024-02-06 18:00:09,643 E Killing process (Graceful shutdown timed out)
+2024-02-06 18:00:10,654 I Disabled backup subprocess on after process death
+2024-02-06 18:00:10,655 I Starting process
+2024-02-06 18:00:11,690 I System memory: Virtual 5.9GiB/11.8GiB, Swap 81.1MiB/4.2GiB
+> Process memory: Virtual 213.2MiB/1.0B, Resident 228.2MiB
+> Process uptime 0:00:01/1:00:00, start count 2, pid (11412, 6080)
+> Script uptime 0:00:21
+> Healthiness {'Running': True, 'Memory': False, 'Uptime': True}
+2024-02-06 18:00:11,698 I System memory: Virtual 5.9GiB/11.8GiB, Swap 81.1MiB/4.2GiB
+> Process memory: Virtual 216.1MiB/1.0B, Resident 231.3MiB
+> Process uptime 0:00:01/1:00:00, start count 2, pid (11412, 6080)
+> Script uptime 0:00:21
+> Healthiness {'Running': True, 'Memory': False, 'Uptime': True}
+2024-02-06 18:00:11,699 W Process is not healthy, restart in 0:00:15 (<t:1707217226:R>), healthiness {'Running': True, 'Memory': False, 'Uptime': True}
+2024-02-06 18:00:21,710 W Process kill in 0:00:05
