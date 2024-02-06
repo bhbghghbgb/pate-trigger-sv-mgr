@@ -91,7 +91,7 @@ async def process_monitor_loop():
     try:
         while True:
             healthy_status = get_process_is_healthy()
-            if not all(healthy_status):
+            if not all(healthy_status.values()):
                 await warn_before_process_kill(healthy_status)
                 return  # finishes the task here to trigger restart_process in main()
             await asyncio.sleep(PROCESS_MONITOR_INTERVAL)
@@ -179,16 +179,16 @@ def wait_process_graceful_kill(
         return False, None
 
 
-def get_process_is_healthy() -> tuple[bool, bool, bool]:
+def get_process_is_healthy() -> dict[str, bool]:
     global process_memory_info_cached
     process_memory_info = process_memory_info_cached
     if process_memory_info is None:
-        return False, False, False
-    return (
-        True,
-        process_memory_info[0] < PROCESS_MAX_MEM,
-        get_process_uptime() < PROCESS_MAX_LIVE_TIME,
-    )
+        return {"Running": False, "Memory": False, "Uptime": False}
+    return {
+        "Running": True,
+        "Memory": process_memory_info[0] < PROCESS_MAX_MEM,
+        "Uptime": get_process_uptime() < PROCESS_MAX_LIVE_TIME,
+    }
 
 
 def get_process_uptime():
