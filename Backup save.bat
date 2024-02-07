@@ -1,4 +1,5 @@
 rem move this file to [pate-trigger]'s directory
+echo %date% %time%
 move /y "./Saved2.rar" "./Saved3.rar"
 move /y "./Saved1.rar" "./Saved2.rar"
 move /y "./Saved.rar" "./Saved1.rar"

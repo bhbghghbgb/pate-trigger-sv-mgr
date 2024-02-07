@@ -117,14 +117,14 @@ async def warn_before_process_kill(healthy_status):
     statistics_log()
     logger.warning(
         "Process is not healthy, restart in %s (%s), healthiness %s",
-        humanize_duration(PROCESS_PRIOR_KILL_TIME),
+        humanize_duration_iso_style(PROCESS_PRIOR_KILL_TIME),
         discordize_timestamp_relative_to_now(PROCESS_PRIOR_KILL_TIME),
         healthy_status,
     )
     await asyncio.sleep(PROCESS_PRIOR_KILL_TIME - PROCESS_PRIOR_KILL_LAST_WARNING_TIME)
     logger.warning(
         "Process kill in %s",
-        humanize_duration(PROCESS_PRIOR_KILL_LAST_WARNING_TIME),
+        humanize_duration_iso_style(PROCESS_PRIOR_KILL_LAST_WARNING_TIME),
     )
     await asyncio.sleep(PROCESS_PRIOR_KILL_LAST_WARNING_TIME)
 
@@ -251,18 +251,33 @@ def statistics_log():
         humanize_size(process_memory_virtual),
         humanize_size(PROCESS_MAX_MEM),
         humanize_size(process_memory_resident),
-        humanize_duration(get_process_uptime()),
-        humanize_duration(PROCESS_MAX_LIVE_TIME),
+        humanize_duration_colon_style(get_process_uptime()),
+        humanize_duration_colon_style(PROCESS_MAX_LIVE_TIME),
         process_start_count,
         process_pid,
-        humanize_duration(time.time() - script_start_timepoint),
+        humanize_duration_colon_style(time.time() - script_start_timepoint),
         get_process_is_healthy(),
     )
     last_statistics_log_timepoint = time.time()
 
 
-def humanize_duration(seconds: float):
+def humanize_duration_colon_style(seconds: float):
     return str(datetime.timedelta(seconds=int(seconds)))
+
+
+def humanize_duration_iso_style(seconds: float):
+    def duration_unit_iter(seconds: int):
+        if not seconds:
+            yield "0s"
+            return
+        dividend = seconds
+        for divisor, unit in zip((60 * 60 * 24, 60 * 60, 60, 1), ("d", "h", "m", "s")):
+            quotient, remainder = divmod(dividend, divisor)
+            if quotient:
+                yield f"{quotient}{unit}"
+            dividend = remainder
+
+    return " ".join(duration_unit_iter(int(seconds)))
 
 
 def get_system_memory_info():
