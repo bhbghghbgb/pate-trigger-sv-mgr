@@ -36,6 +36,10 @@ last_statistics_log_timepoint = time.time() - STATISTICS_LOG_INTERVAL + 10
 process_memory_info_cached: tuple[int, int] | None = None
 
 
+class MonitoringProcessFinished(Exception):
+    pass
+
+
 async def main():
     global statistics_log_task, wait_process_unexpected_death__actually_expected
     setup_logging()
@@ -56,26 +60,15 @@ async def main():
                     logger.critical("The process doesn't want to start")
                     break
                 statistics_log()
-                wait_process_unexpected_death_task = asyncio.create_task(
-                    wait_process_unexpected_death()
-                )
-                process_monitor_loop_task = asyncio.create_task(process_monitor_loop())
-                process_data_backup_job_task = asyncio.create_task(
-                    process_data_backup_job_loop()
-                )
                 wait_process_unexpected_death__actually_expected = False
                 # return when either the process died unexpectedly, or it's not healthy and past the warning time
-                # the backup job will not finish itself but will also be cancelled if the process dies
-                _, unfinished = await asyncio.wait(
-                    [
-                        wait_process_unexpected_death_task,
-                        process_monitor_loop_task,
-                        process_data_backup_job_task,
-                    ],
-                    return_when=asyncio.FIRST_COMPLETED,
-                )
-                for task in unfinished:
-                    task.cancel()
+                # these tasks will throw when it happens
+                try:
+                    async with asyncio.TaskGroup() as tg:
+                        tg.create_task(wait_process_unexpected_death())
+                        tg.create_task(process_monitor_loop(tg))
+                except ExceptionGroup:
+                    logger.debug("All monitoring tasks cancelled")
         except KeyboardInterrupt:
             logger.info("Requested monitor termination", exc_info=True)
             on_script_stop()
@@ -98,18 +91,23 @@ async def wait_process_unexpected_death():
                 logger.error("Process died unexpectedly, return code %d", return_code)
             process_parent_subprocess = None
             process_object = None
-            # finishes the task here to trigger restart_process in main()
+            # raise here to cancel the TaskGroup
+            raise MonitoringProcessFinished()
     except asyncio.CancelledError:
         logger.debug("Process wait for unexpected death cancelled")
 
 
-async def process_monitor_loop():
+async def process_monitor_loop(task_group: asyncio.TaskGroup):
     try:
+        # it makes sense to create this task here instead of in main() because it only runs when process being monitored
+        # it will not raise exception and will still be cancelled because of TaskGroup
+        task_group.create_task(process_data_backup_job_loop())
         while True:
             healthy_status = get_process_is_healthy()
             if not all(healthy_status.values()):
                 await warn_before_process_kill(healthy_status)
-                return  # finishes the task here to trigger restart_process in main()
+                # raise here to trigger restart_process in main()
+                raise MonitoringProcessFinished()
             await asyncio.sleep(PROCESS_MONITOR_INTERVAL)
     except asyncio.CancelledError:
         logger.debug("Process monitor loop cancelled")
