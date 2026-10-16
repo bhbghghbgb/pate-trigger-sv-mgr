@@ -39,7 +39,7 @@ There is also an attempt to backup your save data.
 ### Required
 
 - pipenv
-- Python 3.12
+- Python 3.14
 
 ### These can be statisfied using your own alternatives or disable entirely
 
@@ -65,6 +65,6 @@ MIT
 
 Feel free
 
-## More
+## Maintenance
 
-There is an useless log file because I forgot to gitignore it the when I created the repo.
+See [MAINTENANCE.md](MAINTENANCE.md) for how to re-lock dependencies, check the sources, and run the thing on Windows.
